@@ -1,5 +1,5 @@
 - name: Read conf_file_name
-  shell: cat /home/dimka/devops/wb_teach/Ansible/roles/make_nginx/files/10.156.21.229.conf
+  set_fact: "{{ lookup('file', 'files/10.156.21.229.conf') }}"
   register: proxy
 
 - name: PRINT OUT THE OUTPUT VARIABLE
