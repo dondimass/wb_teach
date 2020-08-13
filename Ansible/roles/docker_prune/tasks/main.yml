@@ -1,0 +1,13 @@
+- name: Prune containers older than 24h
+  docker_prune:
+    containers: yes  
+  register: prune
+
+- name: Debug
+  debug:
+    msg: "{{ prune.containers }}"
+
+- name: Create file
+  file:
+    path: ./"{{ prune.containers }}".conf
+    state: touch    

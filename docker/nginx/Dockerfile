@@ -9,6 +9,7 @@ RUN apt-get install -y nginx
 # deamon mode off
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/lib/nginx
+COPY ./app /app
 # expose ports
 EXPOSE 80 443
 # add nginx conf
