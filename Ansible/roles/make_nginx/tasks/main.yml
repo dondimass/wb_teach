@@ -1,7 +1,10 @@
 - name: Read conf_file_name
-  set_fact: "{{ lookup('file', 'files/10.156.21.229.conf') }}"
-  register: proxy
+  stat:
+   path: "../roles/make_nginx/files/test1.conf"
+  register: confresult
 
-- name: PRINT OUT THE OUTPUT VARIABLE
-  debug:
-    msg: "{{ proxy }}"
+- name: Create config file if does noe exist
+  copy:
+    src: "../roles/make_nginx/files/default.conf"
+    dest: "../roles/make_nginx/files/test1.conf"
+  when: confresult.stat.exists == false
