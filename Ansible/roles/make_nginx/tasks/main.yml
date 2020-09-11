@@ -3,6 +3,10 @@
    path: "../roles/make_nginx/files/test1.conf"
   register: confresult
 
+- name: Print confresult
+  debug:
+    msg: "{{ confresult.stat.exists }}"
+
 - name: Create config file if does noe exist
   copy:
     src: "../roles/make_nginx/files/default.conf"
