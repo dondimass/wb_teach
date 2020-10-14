@@ -1,0 +1,48 @@
+version: "3.7"
+
+x-logger: &logger
+    logging:
+      #driver: none
+      driver: json-file
+      
+x-networks: &networks
+    networks:
+      - service_net
+
+x-deploy: &deploy-resources
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 200M
+          
+x-service-traefik: &service-traefik 
+  traefik: 
+    image: "traefik:v2.3"  
+    deploy:
+      replicas: 1 
+      restart_policy:
+        condition: on-failure
+      <<: *deploy-resources
+    <<: *logger
+    <<: *networks
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/devops-service/traefik.yml:/traefik.yml:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$R39tYfQE$$nNpA0M.99fdAQES44qP4I/"
+
+services: 
+
+  <<: *service-traefik
+
+networks:
+  service_net: 
+    name: service_net
+    external: true
